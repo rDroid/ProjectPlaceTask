@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<title>FB Page Search</title>
+<head>
+    <meta charset="UTF-8">
+    <link href="main_style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+
+        //---------variables-------------------------------
+        // appID ="760581984029531"
+        //appSecretKey="4c4ab338adca950977c4a766c7f5f99c"
+        var favs = {};
+
+        //---------variables-------------------------------
+
+        //-----------------------------------------------------------------------------
+        //-----------search related functions/evet handlers----------------------------
+        //-------------------------------------------------------------------------------     
+
+        function searchKeyPress(e) {
+            // look for window.event in case event isn't passed in
+            if (typeof e == 'undefined' && window.event) { e = window.event; }
+            if (e.keyCode == 13) {
+                performSearch();
+            }
+        }            
+           
+        function performSearch() {
+            // use the typed in text to do a query in the graph api.
+            document.getElementById("imgLoader").style.display = "inherit";
+            document.getElementById("btnSearch").disabled = true;
+            var searchText = document.getElementById("txtSearchItem").value;
+            searchText = encodeURI(searchText); // to handle spaces n special characters in search
+            var urlTOSearch = "https://graph.facebook.com/search?q='" + searchText + "'&type=page&fields=category,id,name,picture,description,about,company_overview,founded,likes,link,location,mission,website&access_token=760581984029531|4c4ab338adca950977c4a766c7f5f99c";
+            //ideally access key and appsecret key should be hidden on a server side code... but here using it anyway....
+            var mHttpClient = new HttpClient();
+            mHttpClient.get(urlTOSearch, progress, success, error);
+            return false;
+        }
+
+        function success(retvalue) {
+            //called when the HttpClient reports a success event 
+            // read the response and show as list to user.        
+            document.getElementById("imgLoader").style.display = "none";
+            document.getElementById("btnSearch").disabled = false;
+            var jsonResponse = JSON.parse(retvalue);
+
+            var resultHtml = "";
+            //read the json response. 
+            for (var key in jsonResponse) {
+                if (jsonResponse.hasOwnProperty(key)) {
+                    if (key == "data") {// required values are inside data object.
+                        var arr = jsonResponse[key];
+                        for (i = 0; i < arr.length; i++) {
+                            var jsonObj = arr[i];
+                            //create a Organization object and set values. 
+                            var org = new Organization(jsonObj.name, jsonObj.category, jsonObj.id);
+                            org.setLocation(jsonObj.location);
+                            org.setWebsite(jsonObj.website);
+                            org.setAbout(jsonObj.about);
+                            org.setCompanyOverview(jsonObj.company_overview);
+                            org.setDescription(jsonObj.description);
+                            org.setFounded(jsonObj.founded);
+                            org.setLikes(jsonObj.likes);
+                            org.setLink(jsonObj.link);
+                            org.setMission(arr[i].mission);
+
+                            resultHtml += "<div class='list_item'>"
+
+                            resultHtml += "<div class='img-frame'><a href='"+org.picture +"' target='_blank'><img src='placeholder.jpg' data-src='https://graph.facebook.com/" + arr[i].id + "/picture?height=100&type=normal&width=100' alt='" + org.name + "' class='org-icon'/></a></div>";
+                            resultHtml += "<div class='org-details'><div class='org-name'>" + org.name + "</div>";
+                            resultHtml += "<div class='org-category'>Category: " + org.category + "</div>";
+                            resultHtml += "<div class='org-desc'><b>Page Description</b>" + org.description + "</div>";
+                            resultHtml += "<div class='more-dtls-frame hidden visuallyhidden' id='more-dtls-frm_" + i + "'><hr/>";
+                            resultHtml += "<p><b>About:</b> " + org.about + "</p>";
+                            resultHtml += "<p><b>Overview:</b> " + org.company_overview + "</p>";
+                            resultHtml += "<p><b>Founded:</b> " + org.founded + "</p>";
+                            resultHtml += "<p><b>Total Likes:</b> " + org.likes + "</p>";
+                            if (org.link == null) {
+                                resultHtml += "<p><b>View on Facebook:</b> NA</p>";
+                            } else {
+                                resultHtml += "<p><b>View on Facebook:</b> <a href='" + org.link + "' target='_blank'>" + org.link + "</a></p>";
+                            }
+                            if (org.website == null) {
+                                resultHtml += "<p><b>Website:</b> NA </p>";
+                            } else {
+                                resultHtml += "<p><b>Website</b> <a href='" + org.website + "' target='_blank'>" + org.website + "</a></p>";
+                            }
+                            //resultHtml += "<p>" + org.talking_about_count + " people are talking about this</p>";
+                            resultHtml += "<p><b>Location</b> " + org.location + "</p>";
+                            resultHtml += "</div><!--/more-dtls-frame --></div><!--/org-details --><span class='moreLink' id='more_" + i + "' data-target='more-dtls-frm_" + i + "' onClick='toggleMoreDetails(this)'>more..</span>";
+                            if (org.link in favs) {
+                                resultHtml += " <img class='favicon' src='1417876065_Fav.png' data-src='1417876065_Fav.png' id='" + org.link + "' data-name='" + org.name + "<br/>" + org.link + "' onClick='toggleFav(this)'/></div>";
+                            } else {
+                                resultHtml += " <img class='favicon' src='1417876068_Fav_Empty.png' data-src='1417876068_Fav_Empty.png' id='" + org.link + "' data-name='" + org.name + "<br/>" + org.link + "' onClick='toggleFav(this)'/></div>";
+                            }
+
+                        }
+                    }
+                }
+            }
+            if (resultHtml == "") {                
+                //nothing found
+                resultHtml = "<p>Sorry, no results found for the text you typed</p>";
+            }
+            document.getElementById("srch_result").innerHTML = resultHtml;
+            processScroll();  // call processScroll to load a few images that are visible on screen.
+        }
+
+        function progress(retvalue) {
+            if (retvalue != null) {
+                document.getElementById("srch_result").innerHTML = retvalue.toString();
+            }
+        }
+        function error(retvalue) {
+            document.getElementById("imgLoader").style.display = "none";
+            document.getElementById("srch_result").innerHTML = retvalue.toString();
+            document.getElementById("btnSearch").disabled = false;
+        }
+        //-----------------------------------------------------------------------------
+        //-----------/END :search related functions/evet handlers----------------------------
+        //------------------------------------------------------------------------------
+
+        //----------------------HTTP CLIENT CLASS to handle http request------------------=----------
+        //reference : -------------https://stackoverflow.com/questions/247483/http-get-request-in-javascript--
+        //-----------------------------------------------------------------------------------------------------
+        var HttpClient = function () {
+            //----get method--------------------
+            this.get = function (mUrl, mCallbackProgress, mCallBackSuccess, mCallBackError) {
+                //simple get mehtod to handle the http call. pass callback functions to acess events.
+                xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState == 0) {
+                        mCallbackProgress("Request not initialized");
+                    }
+                    if (xmlhttp.readyState == 1) {
+                        //Server connection established
+                        mCallbackProgress("Connecting to facebook...");
+                    }
+                    if (xmlhttp.readyState == 2) {
+                        //Request received
+                        mCallbackProgress("Connected! :)");
+                    }
+                    if (xmlhttp.readyState == 3) {
+                        //Processing Request
+                        mCallbackProgress("Searching for pages matching given text...");
+                    }
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        mCallBackSuccess(xmlhttp.responseText);
+                    }
+                    if (xmlhttp.status == 404) {
+                        mCallBackError("Page not found");
+                    }
+                }
+
+                xmlhttp.open("GET", mUrl, true); //true= asynchronous call
+                xmlhttp.timeout = 10000; // time out for 10 seconds... 
+
+                xmlhttp.ontimeout = function () {
+                    mCallBackError("Request timed out. :(  Please retry");
+                }
+
+                xmlhttp.send(null);
+            }
+
+
+            //-----post method---------
+            this.post = function (url, callback) {
+                xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState == 0) {
+                        callback("Request not initialized");
+                    }
+                    if (xmlhttp.readyState == 1) {
+                        callback("Server connection established");
+                    }
+                    if (xmlhttp.readyState == 2) {
+                        callback("Request received");
+                    }
+                    if (xmlhttp.readyState == 3) {
+                        callback("Processing Request");
+                    }
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        callback(xmlhttp.responseText);
+                    }
+                    if (xmlhttp.status == 404) {
+                        callback("Page not found");
+                    }
+                }
+                xmlhttp.open("POST", url, true);
+                xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlhttp.send("q=Tata Steel&type=page&access_token=760581984029531|4c4ab338adca950977c4a766c7f5f99c");
+            }
+        }
+        //---------------------------------HTTP CLIENT CLASS to handle http request------------------=---------
+        //-----------------------------------------------------------------------------------------------------
+
+
+        //--------------------------------------------------------------------------------------------------------
+        //-----------------------------Organization class to organize/handle PageDetails :) -----------------
+        //--------------------------------------------------------------------------------------------------------
+        function Organization(name, category, orgId) {
+            this.name = name;
+            this.orgId = orgId;
+            this.category = category;
+            this.thumb = "https://graph.facebook.com/" + orgId + "/picture?height=100&type=normal&width=100"; //smaller image.
+            this.picture = "https://graph.facebook.com/" + orgId + "/picture?height=600&type=normal&width=600"; //larger image.
+            // avoiding too many values in constructor, so added setter methods to each property.
+            this.setDescription = setDescription;
+            this.setAbout = setAbout;
+            this.setCompanyOverview = setCompanyOverview;
+            this.setFounded = setFounded;
+            this.setLikes = setLikes;
+            this.setLink = setLink;
+            this.setLocation = setLocation;
+            this.setMission = setMission;
+            this.setWebsite = setWebsite;
+
+            function setDescription(description) {
+                if (description == null) {
+                    this.description = "NA";
+                } else {
+                    this.description = description;
+                }
+            };
+
+            function setAbout(about) {
+                if (about == null) {
+                    this.about = "NA";
+                } else {
+                    this.about = about;
+                }
+            };
+
+            function setCompanyOverview(company_overview) {
+                if (company_overview == null) {
+                    this.company_overview = "NA";
+                } else {
+                    this.company_overview = company_overview;
+                }
+            };
+
+            function setFounded(founded) {
+                if (founded == null) {
+                    this.founded = "NA";
+                } else {
+                    this.founded = founded;
+                }
+            };
+            function setLikes(likes) {
+                if (likes == null) {
+                    this.likes = "0";
+                } else {
+                    this.likes = likes;
+                }
+            };
+
+            function setLink(link) {
+                if (link != null && link.toString().indexOf("www") == 0) {
+                    this.link = "http://" + link; //add http: so that the url may be opened when clicked. 
+                } else {
+                    this.link = link;
+                }
+
+
+            };
+            function setLocation(location) {
+                if (location == null) {
+                    this.location = "NA";
+                } else {
+                    this.location = location;
+                }
+
+            };
+            function setMission(mission) {
+                if (mission == null) {
+                    this.mission = "NA";
+                } else {
+                    this.mission = mission;
+                }
+            };
+
+            function setWebsite(website) {
+                //  this.website = website;
+                if (website != null && website.toString().indexOf("www") == 0) {
+                    this.website = "http://" + website; //add http so url can be opened when clicked. if not added, it wont open the page, as it treats the link in self domain
+                } else {
+                    this.website = website;
+                }
+
+
+            };
+
+        }
+        //--------------------------------------------------------------------------------------------------------
+        //----------------------------END :-Organization class to organize/handle PageDetails :) -----------------    
+        //--------------------------------------------------------------------------------------------------------
+
+        //-------------SORTING : to be implemented--------
+        function dynamicSort(property) {
+            var sortOrder = 1;
+            if (property[0] === "-") {
+                sortOrder = -1;
+                property = property.substr(1);
+            }
+            return function (a, b) {
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                return result * sortOrder;
+            }
+        }
+        //---/end sorting-------------------
+
+        function toggleMoreDetails(item) {
+            //function to show /hide more details about a page.
+            var targetID = item.getAttribute("data-target");
+            var targetDiv = document.getElementById(targetID);
+            if (item.innerHTML == "more..") {
+                item.innerHTML = "..less"
+                targetDiv.classList.remove("hidden");
+            } else {
+                item.innerHTML = "more.."
+                targetDiv.classList.add("hidden");
+            }
+        }
+
+        //---------------------------------------------------------------
+        //---------------------Managing Favourites with cookies.------------------------
+        //---------------------------------------------------------------
+        function toggleFav(element) {
+            // function to show hide favourites list
+            var favId = element.id;
+            var favName = element.getAttribute("data-name");
+            if (element.getAttribute("data-src") == "1417876068_Fav_Empty.png") {
+                // if unstarred
+                element.src = '1417876065_Fav.png'; //star it
+                element.setAttribute("data-src", '1417876065_Fav.png'); // so that scoll handler does not remove icon
+                favs[favId] = favName;
+                //alert(JSON.stringify(favs));
+            } else {
+                element.src = '1417876068_Fav_Empty.png'; //unstar it
+                element.setAttribute("data-src", '1417876068_Fav_Empty.png'); // so that scoll handler does not remove icon
+                delete favs[favId];
+            }
+            createCookie("favs", JSON.stringify(favs), 30); //save all favourites into cookie.
+            loadFavs();
+        }
+
+        function showFavs() {
+            // changes visiility ofs the favourite list.
+            document.getElementById("fav-list").classList.add("active");
+        }
+
+        function removeFav(el) {
+            var favId = el.getAttribute("data-key");      
+            if (favId in favs) {
+                delete favs[favId];
+                createCookie("favs", JSON.stringify(favs), 30); //save all favourites into cookie.
+                loadFavs();
+            }
+        }
+
+        function loadFavs() {
+            //load  list of favourites from the cookie. 
+            var favList = getCookie("favs");
+            var favListDiv = document.getElementById("fav-list");
+            var jsonObj = JSON.parse(favList);
+            var favHtml = "";
+            for (var key in jsonObj) {
+                favHtml += "<span class='x-remove-icon' id='" + key + "' data-key='" + key + "'' onClick='removeFav(this)'>X</span><a id='" + key + "' target='_blank' href='" + key + "'><p>" + jsonObj[key] + "</p></a><hr/>";
+                favs[key] = jsonObj[key];
+            }
+            if (favHtml == "") {
+                favHtml = "<p>No favourite pages added</p>";
+            }
+            favListDiv.innerHTML = favHtml;            
+        }
+
+
+        //standard method of searching cookie --reference wschools
+        function getCookie(cname) {
+            //searches all cookies saved by the website, and returns the one specified.
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1);
+                if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+            }
+            return "";
+        }
+
+
+        /// standard method to set a cookie with expiry value. 
+        function createCookie(name, value, days) {
+            //create a cooke expring after no of days specified.
+            var date, expires;
+            if (days) {
+                date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+            } else {
+                expires = "";
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+
+        //function to hide favourites list.
+        document.onclick = function (e) {
+            //handle click outside the favourite list to hide the list.
+            var favs = document.getElementById('fav-list');
+            var favlink = document.getElementById('fav-link');
+            if (e.target != favs && e.target != favlink) {
+                favs.classList.remove("active");
+            }
+        }
+
+        window.onload = function () { loadFavs(); };
+        //---------------------------------------------------------------
+        //---------------------Managing Favourites with cookies------------------------
+        //--------------------------------------------------------------
+
+
+
+
+        //------------------------------------------------------------------------------
+        //--------lazy laoding of images. all images loading together may make page slow.----
+        //--reference :http://css-tricks.com/snippets/javascript/lazy-loading-images/ ---
+        //------------------------------------------------------------------------------
+        function elementInViewport(el) {
+            //check whether image is on screen
+            var rect = el.getBoundingClientRect()
+            if (rect.top >= 0 && rect.left >= 0 && rect.top <= (window.innerHeight || document.documentElement.clientHeight)) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+
+        //to load images lazily when scrolling. 
+        document.addEventListener('scroll', processScroll);
+
+
+
+        function processScroll() {
+            //handles scroll to lazily load images.
+            //upon scroll check if image is being shown, and then load it. 
+            var images = document.getElementsByTagName("img") //gets all img tags.
+            //alert('inside function processScroll');
+            for (var i = 0; i < images.length; i++) {
+                var img = images[i];
+                if (img.getAttribute('data-src') == img.src) {
+                    //if src and data-src are same, image is loaded with correct image.                 
+                    continue;
+                }
+                if (elementInViewport(img)) {
+                    loadImage(img);
+                }
+            }
+        }
+
+        function loadImage(el) {
+            //make sure el has data-src set to source of original image to be displayed
+            var src = el.getAttribute('data-src');
+            el.src = src;
+        }
+        //------------------------------------------------------------------------------
+        //--------lazy laoding of images. ----------------------------------------------
+        //------------------------------------------------------------------------------
+    </script>
+</head>
+<body>
+    <header><div class="center-content">
+    <span  id='fav-link' class="fav-link" onclick="showFavs();">View Favourites<img src="1417876065_Fav.png"  data-src="1417876065_Fav.png" title="View Favourites" style="vertical-align:middle" /></span>
+  <h3>Facebook Page Search</h3></div>
+</header>
+    <div class="fav-list" id='fav-list'>
+        <p>
+            No favourite pages added</p>
+    </div>
+    <!--/fav-list-->
+    <div class="center-content container">
+        <div class="srchBox">
+            <p>
+                Search for any company, organization or brand on facebook and explore stories
+            </p>
+            <input type="text" id="txtSearchItem" placeholder="Organization Name" onkeypress="searchKeyPress(event);"/>
+            <button type="button" id="btnSearch" onclick="return performSearch();">
+                Search</button><img src="Flip%20Flop.gif" style="display: none" id="imgLoade2r" />
+        </div>
+        <!-- /srchBox-->
+        <div id="srch_results_container">
+            <div id="search-loader">
+                <center>
+                    <!--added datasource as same image src so that it is not replaced by the lazy lading funcitons...-->
+                    <img src="ajax-loader.gif" id="imgLoader" style="display: none" data-src="ajax-loader.gif" />
+                </center>
+            </div>
+            <!-- search-loader-->
+            <div id="srch_result">
+            </div>
+            <!-- srch_result-->
+        </div>
+        <!--/srch_results_container -->
+        <footer>
+ <div>
+<p >Developed by <b><a href="https://facebook.com/rianluhar" target="_blank">Rahul Nair</a></b></p>
+<p>for best experience, view in Chrome/Firefox</p>
+</div>
+<div id="cookie-disclaimer">This page uses cookies to store information about pages you mark as favourites.</div><!-- /cookie-disclaimer-->
+</footer>
+    </div>
+    <!-- center-content-->
+</body>
+</html>

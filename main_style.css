@@ -1,0 +1,286 @@
+header, section, footer, aside, nav, main, article, figure
+{
+    display: block;
+}
+
+html, body, div, span  /* --reset ---*/
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+
+nav
+{
+    background: #2c3e50;
+    padding: 10px;
+}
+
+header
+{
+    background: #2c3e50;
+    padding: 3px;
+    color: White;
+    font-weight: 400px;
+    margin-bottom: 20px;
+}
+header h3
+{
+    margin: 5px;
+}
+
+footer
+{
+    font-size: 10px;
+    padding: 5px;
+    margin-top: 20px;
+    border-top: 1px dotted rgba(170, 170, 170, 1);
+    border-bottom: 2px solid rgba(170, 170, 170, 1);
+    text-align: right;
+}
+
+nav ul
+{
+    padding: 5px;
+    margin-top: 0px;
+}
+nav ul li
+{
+    display: inline;
+    margin: 5px;
+    padding: 0px;
+}
+
+nav ul li a
+{
+    text-decoration: none;
+    color: White;
+}
+
+body
+{
+    font-family: Trebuchet MS ,sans-serif;
+    background: #E9EAED;
+}
+input[type="text"]
+{
+    border: 1px solid #BDC7D8;
+    margin: 0px;
+    padding: 3px;
+}
+button
+{
+    background: #2C3E50;
+    border-color: #2F477A #29447E #1A356E;
+    color: #FFF;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 0px 6px;
+    text-align: center;
+    vertical-align: middle;
+    border-width: 1px;
+    cursor: pointer;
+}
+
+button:disabled
+{
+    background: #BFD7EF;
+}
+.test
+{
+    background: yellow;
+    padding: 20px;
+}
+.center-content
+{
+    margin: 0px auto;
+    position: relative;
+    width: 80%;
+}
+.center-content.container
+{
+    border-width: 1px;
+    border-style: solid;
+    -moz-border-top-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    border-image: none;
+    border-color: #E9EAED #DFE0E4 #D0D1D5;
+    border-radius: 3px;
+}
+.center-content .srchBox
+{
+    background: #F6F7F8;
+    padding: 10px;
+}
+#srch_results_container
+{
+    padding: 10px;
+    border-top: 1px solid #E5E5E5;
+    background: white;
+}
+.list_item
+{
+    background-color: #F2F2F2;
+    border: 1px solid #CCC;
+    font-size: 12px;
+    margin-top: 3px;
+    display: inline-block;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    position: relative;
+}
+.list_item .org-name
+{
+    font-weight: bold;
+    color: rgba(22, 76, 122, 1);
+    padding: 3px;
+}
+.list_item .org-icon
+{
+    vertical-align: top;
+}
+.list_item.hidden
+{
+    display: none;
+}
+.img-frame
+{
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    padding: 3px;
+    text-align: center;
+    box-shadow: 1px 1px 1px 1px #FFF;
+    border: 4px solid white;
+    float: left;
+}
+.org-details
+{
+    margin-left: 10px;
+    float: left;
+    max-width: 80%;
+}
+.org-desc
+{
+    white-space: pre-wrap;
+}
+.moreLink
+{
+    display: block;
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
+    color: #164C7A;
+    cursor: pointer;
+}
+.more-dtls-frame
+{
+    display: inherit;
+    transition: all 2s linear;
+}
+
+.more-dtls-frame.hidden
+{
+    display: none;
+}
+
+
+/*-  favourite list--*/
+
+.favicon
+{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor:pointer;
+}
+.fav-link
+{
+    float: right;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 0px 15px;
+}
+.fav-link:hover
+{
+    background: rgba(34, 88, 110, 1);
+    background: rgba(31, 31, 33, 1);
+}
+
+.fav-list
+{
+    width: 310px;
+    min-width: 0px;
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    z-index: 1000;
+    display: none;
+    min-width: 160px;
+    padding: 5px 0px;
+    margin: 2px 0px 0px;
+    text-align: left;
+    background-color: #2c3e50;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.176);
+    color: White;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.fav-list.active
+{
+    display: inherit;
+}
+.fav-list p
+{
+    padding: 5px;
+}
+.fav-list a
+{
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 11px;
+}
+.fav-list p:hover
+{
+    background: rgba(31, 31, 33, 1);
+}
+.x-remove-icon
+{
+    color: white;
+    float: right;
+    font-weight: bold;
+    padding: 5px;    
+    border-radius: 15px;
+    line-height: 1;
+    font-size: 11px;
+    cursor: pointer;
+    margin-right: 3px;
+}
+.x-remove-icon:hover
+{
+    background: rgba(210, 75, 75, 1);
+    border-color: transparent;
+}
+/*-  END: /favourite list--*/
+
+
+#cookie-disclaimer
+{
+    font-size: 11px;
+    background: rgba(50, 107, 149, 1);
+    color: White;
+    font-weight: bold;
+}
