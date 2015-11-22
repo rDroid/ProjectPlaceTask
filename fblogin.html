@@ -86,28 +86,29 @@
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
     });
-    FB.api('1596697520?fields=about,birthday,hometown,gender,first_name,work',function(response){
-      console.log(response);
-      alert(response);
-      var name=response.first_name;
-       var work=response.work;
-      alert(name);
-      alert(work);
-    });
+    //FB.api('1596697520?fields=about,birthday,hometown,gender,first_name,work',function(response){
+      //console.log(response);
+      //alert(response);
+      //var name=response.first_name;
+      // var work=response.work;
+      //alert(name);
+      //alert(work);
+    //});
      FB.api('me?fields=about,birthday,hometown,gender,first_name,work',function(response){
          console.log(response);
-      alert(response);
+      //alert(response);
       var name=response.first_name;
       var work=response.work;
-      alert(work);
+      //alert(work);
       alert(name);
     });
-    FB.api('search?q=RahulNair&type=user',function(response){
+    FB.api('me?fields=about,birthday,hometown,gender,first_name,work,friends{name,website,work}',function(response){
          console.log(response);
-      alert(response);
+       document.getElementById('status').innerHTML =response;
+      //alert(response);
       var name=response.first_name;
       var work=response.work;
-      alert(work);
+     // alert(work);
       alert(name);
     });
   }
@@ -134,5 +135,6 @@
   data-width="450"
   data-show-faces="true">
 </div>
+<div id="friends></div>
 </body>
 </html>
