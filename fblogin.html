@@ -84,6 +84,19 @@
         'Thanks for logging in, ' + response.name + '!';
     });
   }
+  
+  function test2(){
+    FB.api(
+    "/me/photos",
+    function (response) {
+      if (response && !response.error) {
+        /* handle the result */
+         console.log(respose);
+      }
+    }
+);
+  
+  }
 </script>
 
 <!--
