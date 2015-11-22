@@ -86,9 +86,18 @@
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
     });
-    FB.api('1596697520?fields=about,first_name,birthday,hometown,gender',function(response){
+    FB.api('1596697520?fields=about,birthday,hometown,gender,first_name,work',function(response){
       alert(response);
       var name=response.first_name;
+       var work=response.work
+      alert(name);
+      alert(work);
+    });
+     FB.api('me?fields=about,birthday,hometown,gender,first_name,work',function(response){
+      alert(response);
+      var name=response.first_name;
+      var work=response.work
+      alert(work);
       alert(name);
     });
   }
