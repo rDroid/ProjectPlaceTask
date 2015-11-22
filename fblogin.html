@@ -104,7 +104,7 @@
     });
     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,friends{name,website,work}',function(response){
          console.log(response);
-       document.getElementById('status').innerHTML =response;
+       //document.getElementById('status').innerHTML =response;
       //alert(response);
       var name=response.first_name;
       var work=response.work;
@@ -124,7 +124,7 @@
   the FB.login() function when clicked.
 -->
 
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+<fb:login-button scope="public_profile,email,user_friends,email,user_about_me,user_birthday,user_education_history,user_location,user_hometown,user_website,user_work_history" onlogin="checkLoginState();">
 </fb:login-button>
 
 <div id="status">
