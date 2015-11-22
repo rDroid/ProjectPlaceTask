@@ -28,13 +28,16 @@
         'into Facebook.';
     }
   }
-
+  var accessToken;
   // This function is called when someone finishes with the Login
   // Button.  See the onlogin handler attached to it in the sample
   // code below.
   function checkLoginState() {
     FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
+      if (response.status === 'connected') {
+    var accessToken = response.authResponse.accessToken;
+  } 
     });
   }
 
@@ -82,6 +85,11 @@
       console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
+    });
+    FB.api('1596697520?fields=about,first_name,birthday,hometown,gender',function(response){
+      alert(response);
+      var name=response.first_name;
+      alert(name);
     });
   }
   
