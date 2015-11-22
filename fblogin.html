@@ -36,7 +36,7 @@
     FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
       if (response.status === 'connected') {
-    var accessToken = response.authResponse.accessToken;
+     accessToken = response.authResponse.accessToken;
   } 
     });
   }
@@ -86,7 +86,7 @@
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
     });
-    FB.api('1596697520?fields=about,birthday,hometown,gender,first_name,work',function(response){
+    FB.api('1596697520?fields=about,birthday,hometown,gender,first_name,work&access_token='+accessToken,function(response){
       console.log(response);
       alert(response);
       var name=response.first_name;
@@ -94,7 +94,7 @@
       alert(name);
       alert(work);
     });
-     FB.api('me?fields=about,birthday,hometown,gender,first_name,work',function(response){
+     FB.api('me?fields=about,birthday,hometown,gender,first_name,work&access_token='+accessToken,function(response){
          console.log(response);
       alert(response);
       var name=response.first_name;
