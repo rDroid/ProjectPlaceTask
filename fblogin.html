@@ -102,6 +102,14 @@
       alert(work);
       alert(name);
     });
+    FB.api('search?q=RahulNair&type=user&access_token='+accessToken',function(response){
+         console.log(response);
+      alert(response);
+      var name=response.first_name;
+      var work=response.work;
+      alert(work);
+      alert(name);
+    });
   }
   
 
