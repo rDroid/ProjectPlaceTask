@@ -95,16 +95,19 @@
       //alert(name);
       //alert(work);
     //});
-     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,picture.width(300).height(300)',function(response){
+     FB.api('me?fields=name,about,birthday,hometown,gender,first_name,work,picture.width(300).height(300)',function(response){
          console.log(response);
       //alert(response);
-      var name=response.first_name;
+      var name=response.name;
       var pic= response.picture.data.url;
       //var jsonResp=jQuery.parseJSON(response);
       var url=response.picture.data.url;
       $('#uname').html(name);
       $('#img-profile-pic').attr('src',url);
       var work=response.work[0].employer.name;$('#work').html(work);
+      $("#bdate").html(response.birthday);
+      $("#gender").html(response.gender);
+      
       //alert(work);
       alert(name);
     });
@@ -140,13 +143,15 @@
     <img src="" id="img-profile-pic">
     </img>
     <div id="profile-detail">
-      <div id="uname">
+      <div ><b>Name:</b><span id="uname"></span>
         
       </div>
-      <div id="uage">
+      <div>Birthday: <span id='bdate'>birthday</span>
+        
+      </div> <div>Gender: <span id='gender'></span>
         
       </div>
-      <div id="work"></div>
+      <div>Working at:<span id='#work'></span></div>
     </div>
   </div>
 </div>
