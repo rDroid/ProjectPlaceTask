@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 </head>
 <body>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -94,11 +95,14 @@
       //alert(name);
       //alert(work);
     //});
-     FB.api('me?fields=about,birthday,hometown,gender,first_name,work',function(response){
+     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,picture',function(response){
          console.log(response);
       //alert(response);
       var name=response.first_name;
-      var work=response.work;
+      var pic= response.picture;
+      $('#uname').html(name);
+      var('#img-profile-pic').attr('src','')
+      var work=response.work;$('#work').html(pic);
       //alert(work);
       alert(name);
     });
@@ -129,11 +133,20 @@
 
 <div id="status">
 </div>
-<div
-  class="fb-like"
-  data-share="true"
-  data-width="450"
-  data-show-faces="true">
+<div class='content'>
+  <div class='profile'>
+    <img src="" id="img-profile-pic">
+    </img>
+    <div id="profile-detail">
+      <div id="uname">
+        
+      </div>
+      <div id="uage">
+        
+      </div>
+      <div id="work"></div>
+    </div>
+  </div>
 </div>
 <div id="friends></div>
 </body>
