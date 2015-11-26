@@ -99,9 +99,11 @@
          console.log(response);
       //alert(response);
       var name=response.first_name;
-      var pic= response.picture;
+      var pic= response.picture.data.url;
+      var jsonResp=jQuery.parseJSON(response);
+      var url=jsonResp.picture.data.url;
       $('#uname').html(name);
-      //('#img-profile-pic').attr('src','');
+      $('#img-profile-pic').attr('src',url);
       var work=response.work;$('#work').html(pic);
       //alert(work);
       alert(name);
