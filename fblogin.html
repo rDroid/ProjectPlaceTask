@@ -95,12 +95,12 @@
       //alert(name);
       //alert(work);
     //});
-     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,picture',function(response){
+     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,picture.width(600).height(600)',function(response){
          console.log(response);
       //alert(response);
       var name=response.first_name;
       var pic= response.picture.data.url;
-      var jsonResp=jQuery.parseJSON(response);
+      //var jsonResp=jQuery.parseJSON(response);
       var url=jsonResp.picture.data.url;
       $('#uname').html(name);
       $('#img-profile-pic').attr('src',url);
