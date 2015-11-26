@@ -109,7 +109,7 @@
       $("#gender").html(response.gender);
       
       //alert(work);
-      alert(name);
+    //  alert(name);
     });
     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,friends{name,website,work}',function(response){
          console.log(response);
@@ -118,7 +118,7 @@
       var name=response.first_name;
       var work=response.work;
      // alert(work);
-      alert(name);
+     // alert(name);
     });
   }
   
