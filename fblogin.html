@@ -95,7 +95,7 @@
       //alert(name);
       //alert(work);
     //});
-     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,picture.width(600).height(600)',function(response){
+     FB.api('me?fields=about,birthday,hometown,gender,first_name,work,picture.width(300).height(300)',function(response){
          console.log(response);
       //alert(response);
       var name=response.first_name;
@@ -104,7 +104,7 @@
       var url=response.picture.data.url;
       $('#uname').html(name);
       $('#img-profile-pic').attr('src',url);
-      var work=response.work;$('#work').html(pic);
+      var work=response.work[0].employer.name;$('#work').html(work);
       //alert(work);
       alert(name);
     });
